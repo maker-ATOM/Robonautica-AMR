@@ -1,18 +1,3 @@
-## Task Completed
-
-- [x] Spawn at the origin of the environment 
-- [x] Teleoperate the robot and map the environment.
-
-## Task pending
-
-Due to time constrains the following tasks were not completed.
-
-- [ ] Scan the ArUco markers and store the robot’s closest possible pose
-with respect to the marker when scanning the ArUco marker.
-- [ ] Autonomously navigate to each ArUco marker
-- [ ] Collision avoidance and control of the robot.
-
-
 ## Ideology
 
 Spawning of the robot happens as simply as launching the two launch files provided. `spawn_model` within `gazebo_ros` pacakge, the node responsible to launch the robot has been included within the `tortoisebotpromax_playground` itself. With the robot spawned the lidar data published on the topic `scan` by gazebo can be visualized using rviz.
@@ -36,6 +21,28 @@ Apart from gmapping, slam toolbox and cartographer package were also taken into 
 </p>
 
 [Video Reference](https://github.com/maker-ATOM/robonautica_mapping/tree/master/media)
+
+## Task Completed
+
+- [x] Spawn at the origin of the environment 
+- [x] Teleoperate the robot and map the environment.
+
+## Task pending
+
+Due to time constrains the following tasks were not completed.
+
+- [ ] Scan the ArUco markers and store the robot’s closest possible pose
+with respect to the marker when scanning the ArUco marker.
+- [ ] Autonomously navigate to each ArUco marker
+- [ ] Collision avoidance and control of the robot.
+
+## What next?
+
+As the robot is teleoperated, a individual script will be running which detects the ArUco markers using `openCV`. After detection Ids will be assigned to each marker. The robot will keep on moving until the size of the maker sensed by the camera does reaches the mentioned threshold and the shape of the maker does not aligns to be square, inferring that the robot has aligned with the makers. At this position the pose of the robot will be stored in the form of waypoints.
+
+One thing that actually concerns me is that does not this defies teh concept of autonomous navigation. Since the waypoints are detected by the robot operated in teleoperation mode and the robot is made to traversal those waypoint, there is a human intervention involved.
+
+What I feel should actually happen is that, there should a navigation stack such as the `ROS Navigation Stack` which should be responsible to map the environment, localize the robot and navigate the environment while avoiding any obstacle within the path. The robot will receive goal positions to reached indicated using AcUro markers. Initially with no makers the robot will traverse the environment trying to visit the unvisited area of the environment until any AuRco makers is detected.
 
 ## Errors during Execution
 
@@ -139,13 +146,3 @@ rosrun map_server map_saver -f map
 ```
 
 **Note:** All the above ros command should be executed in different terminal.
-
-
-
-## What next?
-
-As the robot is teleoperated, a individual script will be running which detects the ArUco markers using `openCV`. After detection Ids will be assigned to each marker. The robot will keep on moving until the size of the maker sensed by the camera does reaches the mentioned threshold and the shape of the maker does not aligns to be square, inferring that the robot has aligned with the makers. At this position the pose of the robot will be stored in the form of waypoints.
-
-One thing that actually concerns me is that does not this defies teh concept of autonomous navigation. Since the waypoints are detected by the robot operated in teleoperation mode and the robot is made to traversal those waypoint, there is a human intervention involved.
-
-What I feel should actually happen is that, there should a navigation stack such as the `ROS Navigation Stack` which should be responsible to map the environment, localize the robot and navigate the environment while avoiding any obstacle within the path. The robot will receive goal positions to reached indicated using AcUro markers. Initially with no makers the robot will traverse the environment trying to visit the unvisited area of the environment until any AuRco makers is detected.
