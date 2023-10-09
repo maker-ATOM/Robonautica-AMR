@@ -5,324 +5,138 @@
 
 ## Task pending
 
-- [] Scan the ArUco markers and store the robot’s closest possible position (pose)
+Due to time constrain the following tasks were not completed.
+
+- [ ] Scan the ArUco markers and store the robot’s closest possible position (pose)
 with respect to the marker when scanning the ArUco marker.
-- [] Autonomously navigate to each ArUco marker
-- [] Collision avoidance and control of the robot.
+- [ ] Autonomously navigate to each ArUco marker
+- [ ] Collision avoidance and control of the robot.
 
 
 ## Ideology
 
-Initially
+Spawning of the robot happens as simply as launching the two launch files provided. The node responsible to launch the robot has been included within the `tortoisebotpromax_playground` itself. Within the robot spawned the lidar data published on the topic `scan` by gazebo can be visualized using rviz.
+
+<p align="center">
+	<img src="/media/scan.png" width="968" height="526"/>
+</p>
+<p align="center">
+	<b>Visualization of /scan topic</b>
+</p>
+
+To generate the map, `gmapping` package was utilized  which only requires two things, `/scan` topic and transform between `/odom` and `base_link` frame.
+
+Apart from gmapping, slam toolbox and cartographer package were also taken into consideration for mapping but gmapping was chosen for its simplicity.  
 
 ## Errors during Execution
 
-## What next?
+First error encountered was the the,
+
+```python
+[ERROR] [1696795821.366083727]: material 'silver' is not unique.
+```
+
+After launching `tortoisebotpromax_playground.launch` before the issue was [resolved](https://github.com/rigbetellabs/Robonautica/issues/1) an attempt was made to solved the issue by changing the `material.xacro` file within the `tortoisebotpromax_description`.
+
+From,
+
+```python
+<material name="silver">
+  <color rgba="0.700 0.700 0.700 1.000"/>
+</material>
+```
+
+To,
+
+```python
+<material name="grey">
+  <color rgba="0.700 0.700 0.700 1.000"/>
+</material>
+```
+
+After resolving this was spawned successfully within the gazebo and the `robot_description` was able to visualize in rviz.
+
+---
+
+Secondly, while generating the map of the environment, it was noticed that out of two thing required for the `gmapping` to generate the map, which are `scan` topic where the lidar data is published and transform between `odom` and `base_link` frame which is used to identify the position of the robot from initial point. The transform was missing.
+
+
+<p align="center">
+	<img src="/media/missing_odom.png" width="872" height="340"/>
+</p>
+<p align="center">
+	<b>Missing /odom frame in the tf_tree</b>
+</p>
+
+Before the was [resolved](https://github.com/rigbetellabs/Robonautica/issues/3), a idea was presented to create a node which will subscribe to the topic `/odom` (which did exist) and then publish the transform so that the requirements of gmapping can be satisfied.
+
+Itwas also found that if any frame is found missing by the gmapping package it initiates to publish the frame itself..
+
+<p align="center">
+	<img src="/media/tf_frames.png" width="872" height="370"/>
+</p>
+<p align="center">
+	<b>No link between odom and base_link frame as gmapping publishes the frame which it should.</b>
+</p>
+
+Before a node can created the issue was resolved.
 
 ## Usage
 
-Clone the repository
+Clone the repository into your src directory of ros workspace
+
+```python
+cd ~/catkin_ws/src
+
+git clone git@github.com:maker-ATOM/robonautica_mapping.git
+```
+
+Build the workspace
+
+```pyton
+cd ~/catkin_ws
+catkin_make
+```
+
+Launch gazebo using,
+
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+```
+
+Launch rviz to visualize the map,
+
+```python
+roslaunch tortoisebotpromax_description display.launch
+```
+
+Launch gmapping to generate the map of the environment,
+
+```python
+roslaunch robonautica_mapping gmapping.launch
+```
+
+Teloperate the robot using,
+
+```python
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+```
+
+As the robot is being controller using teleop node, generated map can be visualized in rviz.
+
+To save the generated map,
+```python
+rosrun map_server map_saver -f map
+```
+
+**Note:** All the above ros command should be executed in different terminal.
 
 
 
+## What next?
 
-OUPUT after launcing gmapping
-rosrun gmapping slam_gmapping scan:=scan
-Warning: TF_REPEATED_DATA ignoring data with redundant timestamp for frame odom at time 2811.754000 according to authority unknown_publisher
-         at line 278 in /tmp/binarydeb/ros-noetic-tf2-0.7.6/src/buffer_core.cpp
-[ WARN] [1696841508.422509537, 2826.655000000]: MessageFilter [target=odom ]: Dropped 100.00% of messages so far. Please turn the [ros.gmapping.message_filter] rosconsole logger to DEBUG for more information.
+As the robot is teleoperated, a individual script will bw running which detects the ArUco markers using `openCV`. After detection Ids will be  ned to each marker. The robot will keep on moving until the size of the maker sensed by the camera does reaches the mentioned threshold and the shape of the maker does not aligns to be square, inferring that teh robot has aligned with the makers. At this position the pose of the robot will be stored in the form of waypoints.
 
+One thing that actually concerns me is that does not this defies teh concept of autonomous navigation. Since the waypoints are detected by the robot operated in teleoperation mode and the robot is made to traversal those waypoint, there is a human intervention involved.
 
-
-rostopic echo /tf_static
-transforms: 
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "base_link"
-    child_frame_id: "back_castor_1"
-    transform: 
-      translation: 
-        x: -0.103994
-        y: 0.000262
-        z: 0.01653
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_depth_frame"
-    child_frame_id: "camera_color_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.015
-        z: 0.0
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_color_frame"
-    child_frame_id: "camera_color_optical_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-      rotation: 
-        x: 0.5
-        y: -0.4999999999999999
-        z: 0.5
-        w: -0.5000000000000001
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_link"
-    child_frame_id: "camera_depth_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_depth_frame"
-    child_frame_id: "camera_depth_optical_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-      rotation: 
-        x: 0.5
-        y: -0.4999999999999999
-        z: 0.5
-        w: -0.5000000000000001
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "realsense_1"
-    child_frame_id: "camera_bottom_screw_frame"
-    transform: 
-      translation: 
-        x: 0.011753067204287801
-        y: -0.0004295385558066378
-        z: -0.035091351352319555
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_depth_frame"
-    child_frame_id: "camera_left_ir_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_left_ir_frame"
-    child_frame_id: "camera_left_ir_optical_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-      rotation: 
-        x: 0.5
-        y: -0.4999999999999999
-        z: 0.5
-        w: -0.5000000000000001
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_bottom_screw_frame"
-    child_frame_id: "camera_link"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.0175
-        z: 0.0125
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_depth_frame"
-    child_frame_id: "camera_right_ir_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: -0.05
-        z: 0.0
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "camera_right_ir_frame"
-    child_frame_id: "camera_right_ir_optical_frame"
-    transform: 
-      translation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-      rotation: 
-        x: 0.5
-        y: -0.4999999999999999
-        z: 0.5
-        w: -0.5000000000000001
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "base_link"
-    child_frame_id: "front_castor_1"
-    transform: 
-      translation: 
-        x: 0.120061
-        y: 0.000262
-        z: 0.01653
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "base_link"
-    child_frame_id: "imu_1"
-    transform: 
-      translation: 
-        x: 0.006515
-        y: 4e-06
-        z: 0.04506
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "base_link"
-    child_frame_id: "lidar_base_1"
-    transform: 
-      translation: 
-        x: -0.067038
-        y: 4e-06
-        z: 0.14753
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "lidar_base_1"
-    child_frame_id: "lidar_1"
-    transform: 
-      translation: 
-        x: 0.0353
-        y: 0.0
-        z: 0.047696
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 2771
-        nsecs: 937000000
-      frame_id: "base_link"
-    child_frame_id: "realsense_1"
-    transform: 
-      translation: 
-        x: -0.08369
-        y: -1.8e-05
-        z: 0.289948
-      rotation: 
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
----
-
+What I feel should actually happen is that, there should a navigation stack such asd teh `ROS Navigation Stack` which should be responsible to map the environment, localize the robot and navigate the environment while avoiding any obstacle within the path. The robot will receive goal positions to reached indicated using AcUro markers which it will. Initially with no makers the robot will traverse the environment trying to visit the unvisited area of the environment until any AuRco makers is detected.
