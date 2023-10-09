@@ -5,9 +5,9 @@
 
 ## Task pending
 
-Due to time constrain the following tasks were not completed.
+Due to time constrains the following tasks were not completed.
 
-- [ ] Scan the ArUco markers and store the robot’s closest possible position (pose)
+- [ ] Scan the ArUco markers and store the robot’s closest possible pose
 with respect to the marker when scanning the ArUco marker.
 - [ ] Autonomously navigate to each ArUco marker
 - [ ] Collision avoidance and control of the robot.
@@ -15,7 +15,7 @@ with respect to the marker when scanning the ArUco marker.
 
 ## Ideology
 
-Spawning of the robot happens as simply as launching the two launch files provided. The node responsible to launch the robot has been included within the `tortoisebotpromax_playground` itself. Within the robot spawned the lidar data published on the topic `scan` by gazebo can be visualized using rviz.
+Spawning of the robot happens as simply as launching the two launch files provided. `spawn_model` within `gazebo_ros` pacakge, the node responsible to launch the robot has been included within the `tortoisebotpromax_playground` itself. With the robot spawned the lidar data published on the topic `scan` by gazebo can be visualized using rviz.
 
 <p align="center">
 	<img src="/media/scan.png" width="968" height="526"/>
@@ -24,19 +24,28 @@ Spawning of the robot happens as simply as launching the two launch files provid
 	<b>Visualization of /scan topic</b>
 </p>
 
-To generate the map, `gmapping` package was utilized  which only requires two things, `/scan` topic and transform between `/odom` and `base_link` frame.
+To generate the map, `gmapping` package was utilized  which only has two requirements, `/scan` topic and transform between `/odom` and `base_link` frame.
 
-Apart from gmapping, slam toolbox and cartographer package were also taken into consideration for mapping but gmapping was chosen for its simplicity.  
+Apart from gmapping, slam toolbox and cartographer package were also taken into consideration for mapping, but gmapping was chosen for its simplicity.
+
+<p align="center">
+	<img src="/media/mapping.png" width="911" height="522"/>
+</p>
+<p align="center">
+	<b>Generated map by gmapping package</b>
+</p>
+
+[Video Reference](https://github.com/maker-ATOM/robonautica_mapping/tree/master/media)
 
 ## Errors during Execution
 
-First error encountered was the the,
+First error encountered was the,
 
 ```python
 [ERROR] [1696795821.366083727]: material 'silver' is not unique.
 ```
 
-After launching `tortoisebotpromax_playground.launch` before the issue was [resolved](https://github.com/rigbetellabs/Robonautica/issues/1) an attempt was made to solved the issue by changing the `material.xacro` file within the `tortoisebotpromax_description`.
+After launching `tortoisebotpromax_playground.launch` before the issue was [resolved](https://github.com/rigbetellabs/Robonautica/issues/1) an attempt was made to solved the issue by changing the `material.xacro` file within the `tortoisebotpromax_description` package.
 
 From,
 
@@ -54,11 +63,11 @@ To,
 </material>
 ```
 
-After resolving this was spawned successfully within the gazebo and the `robot_description` was able to visualize in rviz.
+After resolving this robot was spawned successfully within the gazebo and the `robot_description` was able to visualize in rviz.
 
 ---
 
-Secondly, while generating the map of the environment, it was noticed that out of two thing required for the `gmapping` to generate the map, which are `scan` topic where the lidar data is published and transform between `odom` and `base_link` frame which is used to identify the position of the robot from initial point. The transform was missing.
+Secondly, while generating the map of the environment, it was noticed that out of two things required for the `gmapping` to generate the map, which are `scan` topic where the lidar data is published and transform between `odom` and `base_link` frame which is used to identify the position of the robot from initial point. The transform was missing.
 
 
 <p align="center">
@@ -68,9 +77,9 @@ Secondly, while generating the map of the environment, it was noticed that out o
 	<b>Missing /odom frame in the tf_tree</b>
 </p>
 
-Before the was [resolved](https://github.com/rigbetellabs/Robonautica/issues/3), a idea was presented to create a node which will subscribe to the topic `/odom` (which did exist) and then publish the transform so that the requirements of gmapping can be satisfied.
+Before the error was [resolved](https://github.com/rigbetellabs/Robonautica/issues/3), a idea was presented to create a node which will subscribe to the topic `/odom` (which did exist) and then publish the transform so that the requirements of gmapping can be satisfied.
 
-Itwas also found that if any frame is found missing by the gmapping package it initiates to publish the frame itself..
+It was also found that if any frame is found missing by the gmapping package it initiates to publish to the frame itself.
 
 <p align="center">
 	<img src="/media/tf_frames.png" width="872" height="370"/>
@@ -135,8 +144,8 @@ rosrun map_server map_saver -f map
 
 ## What next?
 
-As the robot is teleoperated, a individual script will bw running which detects the ArUco markers using `openCV`. After detection Ids will be  ned to each marker. The robot will keep on moving until the size of the maker sensed by the camera does reaches the mentioned threshold and the shape of the maker does not aligns to be square, inferring that teh robot has aligned with the makers. At this position the pose of the robot will be stored in the form of waypoints.
+As the robot is teleoperated, a individual script will be running which detects the ArUco markers using `openCV`. After detection Ids will be assigned to each marker. The robot will keep on moving until the size of the maker sensed by the camera does reaches the mentioned threshold and the shape of the maker does not aligns to be square, inferring that the robot has aligned with the makers. At this position the pose of the robot will be stored in the form of waypoints.
 
 One thing that actually concerns me is that does not this defies teh concept of autonomous navigation. Since the waypoints are detected by the robot operated in teleoperation mode and the robot is made to traversal those waypoint, there is a human intervention involved.
 
-What I feel should actually happen is that, there should a navigation stack such asd teh `ROS Navigation Stack` which should be responsible to map the environment, localize the robot and navigate the environment while avoiding any obstacle within the path. The robot will receive goal positions to reached indicated using AcUro markers which it will. Initially with no makers the robot will traverse the environment trying to visit the unvisited area of the environment until any AuRco makers is detected.
+What I feel should actually happen is that, there should a navigation stack such as the `ROS Navigation Stack` which should be responsible to map the environment, localize the robot and navigate the environment while avoiding any obstacle within the path. The robot will receive goal positions to reached indicated using AcUro markers. Initially with no makers the robot will traverse the environment trying to visit the unvisited area of the environment until any AuRco makers is detected.
