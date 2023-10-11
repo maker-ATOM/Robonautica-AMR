@@ -3,7 +3,7 @@
 Spawning of the robot happens as simply as launching the two launch files provided. `spawn_model` within `gazebo_ros` pacakge, the node responsible to launch the robot has been included within the `tortoisebotpromax_playground` itself. With the robot spawned the lidar data published on the topic `scan` by gazebo can be visualized using rviz.
 
 <p align="center">
-	<img src="/media/scan.png" width="968" height="526"/>
+	<img src="robonautica_mapping/media/scan.png" width="968" height="526"/>
 </p>
 <p align="center">
 	<b>Visualization of /scan topic</b>
@@ -14,7 +14,7 @@ To generate the map, `gmapping` package was utilized  which only has two require
 Apart from gmapping, slam toolbox and cartographer package were also taken into consideration for mapping, but gmapping was chosen for its simplicity.
 
 <p align="center">
-	<img src="/media/mapping.png" width="911" height="522"/>
+	<img src="robonautica_mapping/media/mapping.png" width="911" height="522"/>
 </p>
 <p align="center">
 	<b>Generated map by gmapping package</b>
@@ -78,7 +78,7 @@ Secondly, while generating the map of the environment, it was noticed that out o
 
 
 <p align="center">
-	<img src="/media/missing_odom.png" width="872" height="340"/>
+	<img src="robonautica_mapping/media/missing_odom.png" width="872" height="340"/>
 </p>
 <p align="center">
 	<b>Missing /odom frame in the tf_tree</b>
@@ -89,7 +89,7 @@ Before the error was [resolved](https://github.com/rigbetellabs/Robonautica/issu
 It was also found that if any frame is found missing by the gmapping package it initiates to publish to the frame itself.
 
 <p align="center">
-	<img src="/media/tf_frames.png" width="872" height="370"/>
+	<img src="robonautica_mapping/media/tf_frames.png" width="872" height="370"/>
 </p>
 <p align="center">
 	<b>No link between odom and base_link frame as gmapping publishes the frame which it should.</b>
