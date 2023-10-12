@@ -22,10 +22,32 @@ Apart from gmapping, slam toolbox and cartographer package were also taken into 
 
 [Video Reference](https://github.com/maker-ATOM/robonautica_mapping/tree/master/media)
 
+> Document of detection of aruco markers
+
+With Aruco markers detected and the pose of the robot stored in the form of waypoints the robot is now capable of autonomously capable of navigating in the environment.
+
+<p align="center">
+	<img src="robonautica_slam/media/costmap.png" width="795" height="823"/>
+</p>
+<p align="center">
+	<b>CostMap of global planner</b>
+</p>
+
+<p align="center">
+	<img src="robonautica_slam/media/plan.png" width="795" height="823"/>
+</p>
+<p align="center">
+	<b>Global planner</b>
+</p>
+
+> Still there are two human intervention points, i) Generation of waypoints and providing it to the Robot and ii) Generation of map, the current navigation stack uses preloaded map to traverse the env.
+
 ## Task Completed
 
 - [x] Spawn at the origin of the environment 
 - [x] Teleoperate the robot and map the environment.
+- [x] localization for SLAM
+- [x] Collision avoidance and control of the robot using move_base from Navigation stack.
 
 ## Task pending
 
@@ -34,7 +56,7 @@ Due to time constrains the following tasks were not completed.
 - [ ] Scan the ArUco markers and store the robot’s closest possible pose
 with respect to the marker when scanning the ArUco marker.
 - [ ] Autonomously navigate to each ArUco marker
-- [ ] Collision avoidance and control of the robot.
+
 
 ## What next?
 
@@ -167,6 +189,30 @@ roslaunch robonautica_slam amcl.launch
 
 Teleop the robot to see the robot in action.
 
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+```
+
 ### Step 2.2 : SLAM
+
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+```
+
+Lauch AMCL node for to visualise localization,
+```python
+roslaunch robonautica_slam amcl.launch
+```
+
+Make sure the robot place in the physical env and robot in simulation are at the same position. If not use inital_pose using Rviz
+
+Lanch `move_base` node to perform navigation.
+
+```python
+roslaunch robonautica_slam move_base.launch
+```
+
+_Update:_ `amcl.launch` and `move_base.launch` have been added into`navigation.launch` so both launch files can be launnched using a single launch file file.
+
 
 **Note:** All the above ros command should be executed in different terminal.
