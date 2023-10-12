@@ -22,10 +22,13 @@ Apart from gmapping, slam toolbox and cartographer package were also taken into 
 
 [Video Reference](https://github.com/maker-ATOM/robonautica_mapping/tree/master/media)
 
+> Task 2 documentation
+
 ## Task Completed
 
 - [x] Spawn at the origin of the environment 
 - [x] Teleoperate the robot and map the environment.
+- [ ] localization for SLAM
 
 ## Task pending
 
