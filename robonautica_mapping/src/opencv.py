@@ -8,6 +8,7 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2.aruco as aruco
+import imutils
 
 class ImageConverterPub:
 
@@ -23,7 +24,7 @@ class ImageConverterPub:
 
     def callback(self, data):
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            cv_image = self.bridge.imgmsg_to_cv2(data, "bgra8")
         except CvBridgeError as e:
             print(e)
 
@@ -40,22 +41,29 @@ class ImageConverterPub:
         cv2.waitKey(3)
 
     def detect_aruco(self, img):
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_250)
-        parameters = aruco.DetectorParameters()
+        amg=imutils.resize(img,1000)
+        gray = cv2.cvtColor(amg, cv2.COLOR_BGR2GRAY)
+        # aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
+        aruco_dict=aruco.Dictionary_get(aruco.DICT_4X4_250)
+        # parameters = aruco.DetectorParameters()
+        Parameters= aruco.DetectorParameters_create()
         # print("aruco marker detected")
-        detector= aruco.ArucoDetector(aruco_dict,parameters)
-        corners, ids, rejected = detector.detectMarkers(gray)
+        # detector= aruco.ArucoDetector(aruco_dict,parameters)
+        corners, ids, rejected = aruco.detectMarkers(gray,aruco_dict,parameters=Parameters)
         print(ids)
         if ids is not None:
             for id in ids:
                 print("entry added")
+                x=int(round(self.odom_data.pose.pose.position.x,3))
+                y=int(round(self.odom_data.pose.pose.position.y,3))
+                z=int(round(self.odom_data.pose.pose.position.z,3))
+
                 self.waypoints.append({
                     'aruco_id': id[0],
                     'position': {
-                        'x': self.odom_data.pose.pose.position.x,
-                        'y': self.odom_data.pose.pose.position.y,
-                        'z': self.odom_data.pose.pose.position.z
+                        'x': x,
+                        'y': y,
+                        'z': z
                     }
                 })
             self.save_waypoints_to_json()
