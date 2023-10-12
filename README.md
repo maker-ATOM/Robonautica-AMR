@@ -130,7 +130,7 @@ roslaunch tortoisebotpromax_description display.launch
 
 ⚠️ **Note:**
 <br>
-Execute Aruco marker detection script and waypoint storage script in this gmapping launch file.
+> Execute Aruco marker detection and waypoint storage script in this gmapping launch file.
 
 Launch gmapping to generate the map of the environment,
 
