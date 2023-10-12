@@ -26,13 +26,28 @@ Apart from gmapping, slam toolbox and cartographer package were also taken into 
 
 With Aruco markers detected and the pose of the robot stored in the form of waypoints the robot is now capable of autonomously capable of navigating in the environment.
 
+<p align="center">
+	<img src="robonautica_slam/media/cost_map.png" width="872" height="340"/>
+</p>
+<p align="center">
+	<b>CostMap of global planner</b>
+</p>
+
+<p align="center">
+	<img src="robonautica_slam/media/plan.png" width="872" height="340"/>
+</p>
+<p align="center">
+	<b>Global planner</b>
+</p>
+
 > Still there are two human intervention points, i) Generation of waypoints and providing it to the Robot and ii) Generation of map, the current navigation stack uses preloaded map to traverse the env.
 
 ## Task Completed
 
 - [x] Spawn at the origin of the environment 
 - [x] Teleoperate the robot and map the environment.
-- [ ] localization for SLAM
+- [x] localization for SLAM
+- [x] Collision avoidance and control of the robot using move_base from Navigation stack.
 
 ## Task pending
 
@@ -41,7 +56,7 @@ Due to time constrains the following tasks were not completed.
 - [ ] Scan the ArUco markers and store the robot’s closest possible pose
 with respect to the marker when scanning the ArUco marker.
 - [ ] Autonomously navigate to each ArUco marker
-- [ ] Collision avoidance and control of the robot.
+
 
 ## What next?
 
