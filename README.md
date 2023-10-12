@@ -114,6 +114,8 @@ cd ~/catkin_ws
 catkin_make
 ```
 
+### Step 1 : Mapping
+
 Launch gazebo using,
 
 ```python
@@ -125,6 +127,10 @@ Launch rviz to visualize the map,
 ```python
 roslaunch tortoisebotpromax_description display.launch
 ```
+
+⚠️ **Note:**
+<br>
+Execute Aruco marker detection script and waypoint storage script in this gmapping launch file.
 
 Launch gmapping to generate the map of the environment,
 
@@ -144,5 +150,23 @@ To save the generated map,
 ```python
 rosrun map_server map_saver -f map
 ```
+copy this folder to `robonautica_slam` package
+
+### Step 2.1 : AMCL
+
+Launch gazebo using,
+
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+```
+
+Lauch AMCL node for to visualise localization,
+```python
+roslaunch robonautica_slam amcl.launch
+```
+
+Teleop the robot to see the robot in action.
+
+### Step 2.2 : SLAM
 
 **Note:** All the above ros command should be executed in different terminal.
