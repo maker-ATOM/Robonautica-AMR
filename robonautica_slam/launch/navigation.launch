@@ -5,7 +5,7 @@
   <arg name="move_forward_only" default="false"/>
 
   <!-- AMCL -->
-  <!-- <include file="$(find robonautica_slam/launch/amcl.launch"/> -->
+  <include file="$(find robonautica_slam)/launch/amcl.launch"/>
 
   <!-- move_base -->
   <include file="$(find robonautica_slam)/launch/move_base.launch">

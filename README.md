@@ -22,7 +22,11 @@ Apart from gmapping, slam toolbox and cartographer package were also taken into 
 
 [Video Reference](https://github.com/maker-ATOM/robonautica_mapping/tree/master/media)
 
-> Task 2 documentation
+> Document of detection of aruco markers
+
+With Aruco markers detected and the pose of the robot stored in the form of waypoints the robot is now capable of autonomously capable of navigating in the environment.
+
+> Still there are two human intervention points, i) Generation of waypoints and providing it to the Robot and ii) Generation of map, the current navigation stack uses preloaded map to traverse the env.
 
 ## Task Completed
 
@@ -170,6 +174,30 @@ roslaunch robonautica_slam amcl.launch
 
 Teleop the robot to see the robot in action.
 
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+```
+
 ### Step 2.2 : SLAM
+
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+```
+
+Lauch AMCL node for to visualise localization,
+```python
+roslaunch robonautica_slam amcl.launch
+```
+
+Make sure the robot place in the physical env and robot in simulation are at the same position. If not use inital_pose using Rviz
+
+Lanch `move_base` node to perform navigation.
+
+```python
+roslaunch robonautica_slam move_base.launch
+```
+
+_Update:_ `amcl.launch` and `move_base.launch` have been added into`navigation.launch` so both launch files can be launnched using a single launch file file.
+
 
 **Note:** All the above ros command should be executed in different terminal.
