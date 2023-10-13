@@ -46,16 +46,13 @@ With Aruco markers detected and the pose of the robot stored in the form of wayp
 
 - [x] Spawn at the origin of the environment 
 - [x] Teleoperate the robot and map the environment.
-- [x] localization for SLAM
+- [x] localization for SLAM.
+- [x] Statc Path plan using move_base 
 - [x] Collision avoidance and control of the robot using move_base from Navigation stack.
-
-## Task pending
-
-Due to time constrains the following tasks were not completed.
-
 - [ ] Scan the ArUco markers and store the robot’s closest possible pose
 with respect to the marker when scanning the ArUco marker.
 - [ ] Autonomously navigate to each ArUco marker
+- [ ] Controller node so robot reaches all the generated waypoints
 
 
 ## What next?
@@ -118,6 +115,10 @@ It was also found that if any frame is found missing by the gmapping package it 
 </p>
 
 Before a node can created the issue was resolved.
+
+---
+
+While perofrming navigation, the local map was not able to detect and avoid obstacles, this was because the lidar frame was wrongly provide to it.
 
 ## Usage
 

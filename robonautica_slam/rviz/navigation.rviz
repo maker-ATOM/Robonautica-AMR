@@ -6,6 +6,8 @@ Panels:
       Expanded:
         - /TF1/Frames1
         - /TF1/Tree1
+        - /Map1
+        - /Global Map1
         - /Global Map1/Costmap1
         - /Global Map1/Planner1
         - /Local Map1
@@ -30,7 +32,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -66,6 +68,91 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        back_castor_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_bottom_screw_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_left_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_left_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_right_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_right_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        front_castor_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        imu_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_wheel_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lidar_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lidar_base_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        realsense_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        right_wheel_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -129,7 +216,7 @@ Visualization Manager:
       Transport Hint: compressed
       Unreliable: false
       Value: false
-    - Alpha: 0.699999988079071
+    - Alpha: 0.4000000059604645
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: false
@@ -167,7 +254,7 @@ Visualization Manager:
       Displays:
         - Alpha: 0.699999988079071
           Class: rviz/Map
-          Color Scheme: costmap
+          Color Scheme: map
           Draw Behind: true
           Enabled: true
           Name: Costmap
@@ -314,10 +401,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 45.66813278198242
+      Scale: 130.01626586914062
       Target Frame: <Fixed Frame>
-      X: 0
-      Y: 0
+      X: 1.6143858432769775
+      Y: 0.000377763994038105
     Saved: ~
 Window Geometry:
   Displays:
