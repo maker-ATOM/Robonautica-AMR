@@ -41,7 +41,7 @@ class ImageConverterPub:
         cv2.waitKey(3)
 
     def detect_aruco(self, img):
-        amg=imutils.resize(img,1000)
+        amg=imutils.resize(img,500)
         gray = cv2.cvtColor(amg, cv2.COLOR_BGR2GRAY)
         # aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
         aruco_dict=aruco.Dictionary_get(aruco.DICT_4X4_250)
@@ -53,17 +53,18 @@ class ImageConverterPub:
         print(ids)
         if ids is not None:
             for id in ids:
-                print("entry added")
-                x=int(round(self.odom_data.pose.pose.position.x,3))
-                y=int(round(self.odom_data.pose.pose.position.y,3))
-                z=int(round(self.odom_data.pose.pose.position.z,3))
+                # print("entry added")
+                x=float(round(self.odom_data.pose.pose.position.x,3))
+                y=float(round(self.odom_data.pose.pose.position.y,3))
+                z=float(round(self.odom_data.pose.pose.position.z,3))
+                # print(x)
 
                 self.waypoints.append({
                     'aruco_id': id[0],
                     'position': {
-                        'x': x,
-                        'y': y,
-                        'z': z
+                        'x': float(x),
+                        'y': float(y),
+                        'z': float(z)
                     }
                 })
             self.save_waypoints_to_json()
@@ -73,6 +74,7 @@ class ImageConverterPub:
     def save_waypoints_to_json(self):
         with open('waypoints.json', 'w') as json_file:
             json.dump(self.waypoints, json_file, indent=4)
+            print("dumped")
 
 def main():
     print("Initializing ROS-node")
