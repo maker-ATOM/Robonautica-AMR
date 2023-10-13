@@ -42,6 +42,10 @@ With Aruco markers detected and the pose of the robot stored in the form of wayp
 
 > Still there are two human intervention points, i) Generation of waypoints and providing it to the Robot and ii) Generation of map, the current navigation stack uses preloaded map to traverse the env.
 
+For controller `next_goal_pose` is published on topic `move_base_simple/goal` and subscribes to `odom` topic to check if the robot has reached the position or not.
+
+**This can be replace with `Actiionib` APIs**
+
 ## Task Completed
 
 - [x] Spawn at the origin of the environment 
@@ -52,7 +56,11 @@ With Aruco markers detected and the pose of the robot stored in the form of wayp
 - [ ] Scan the ArUco markers and store the robot’s closest possible pose
 with respect to the marker when scanning the ArUco marker.
 - [ ] Autonomously navigate to each ArUco marker
-- [ ] Controller node so robot reaches all the generated waypoints
+- [x] Controller node so robot reaches all the generated waypoints
+	- [ ] Convert quats to yaw 
+	- [ ] Increase bot speed
+	- [ ] Change controller architecture from PubSub to actionlib
+	- [ ] Try execept block for end of list
 
 
 ## What next?
@@ -191,7 +199,7 @@ roslaunch robonautica_slam amcl.launch
 Teleop the robot to see the robot in action.
 
 ```python
-roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 ```
 
 ### Step 2.2 : SLAM
@@ -214,6 +222,20 @@ roslaunch robonautica_slam move_base.launch
 ```
 
 _Update:_ `amcl.launch` and `move_base.launch` have been added into`navigation.launch` so both launch files can be launnched using a single launch file file.
+
+### Step 3 : Controller Node for Autonomous Navigation
+
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_playground.launch
+```
+
+```python
+roslaunch robonautica_slam navigation.launch
+```
+
+```python
+rosrun robonautica_wapoints controller.py
+```
 
 
 **Note:** All the above ros command should be executed in different terminal.
