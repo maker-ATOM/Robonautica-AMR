@@ -57,8 +57,8 @@ For controller `next_goal_pose` is published on topic `move_base_simple/goal` an
 with respect to the marker when scanning the ArUco marker.
 - [ ] Autonomously navigate to each ArUco marker
 - [x] Controller node so robot reaches all the generated waypoints
-	- [ ] Convert quats to yaw 
-	- [ ] Increase bot speed
+	- [x] Convert quats to yaw 
+	- [x] Increase bot speed
 	- [ ] Change controller architecture from PubSub to actionlib
 	- [ ] Try execept block for end of list
 

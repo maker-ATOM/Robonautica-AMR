@@ -7,20 +7,31 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Pose
 
 import math
-import tf
+from tf import transformations
 
 current_robot_pose = Pose()
+robot_yaw = 0
 
 def odom_callback(odom_data):
     global current_robot_pose
     current_robot_pose = odom_data.pose.pose
+    global robot_yaw
+    r, p, robot_yaw = transformations.euler_from_quaternion([0,0,current_robot_pose.orientation.z,current_robot_pose.orientation.w])
+    r, p
 
 if __name__ == '__main__':
 
-    waypoints = [(4,1,0,1),(3,2,0,1),(1,1,0,1)]
-    distance_threshold = 0.1
-    angular_threshold = 0.05
+    # x, y, yaw
+    waypoints = [(0,0,0),(0.5,0,0),(1.0,0,0)]
+    distance_threshold = 0.12
+    angular_threshold = 0.2
     goal_index = 0
+
+    x_index = 0
+    y_index = 1
+    yaw_index = 2
+
+
 
     try:
     # -------------------------------------------------------------------#
@@ -32,10 +43,13 @@ if __name__ == '__main__':
         
         next_goal = MoveBaseActionGoal()
         next_goal.goal.target_pose.header.frame_id = "map"
-        next_goal.goal.target_pose.pose.position.x = waypoints[goal_index][0]
-        next_goal.goal.target_pose.pose.position.y = waypoints[goal_index][1]
-        next_goal.goal.target_pose.pose.orientation.z = waypoints[goal_index][2]
-        next_goal.goal.target_pose.pose.orientation.w = waypoints[goal_index][3]
+        next_goal.goal.target_pose.pose.position.x = waypoints[goal_index][x_index]
+        next_goal.goal.target_pose.pose.position.y = waypoints[goal_index][y_index]
+
+        x, y, z, w = transformations.quaternion_from_euler(0,0,waypoints[goal_index][yaw_index])
+ 
+        next_goal.goal.target_pose.pose.orientation.z = z
+        next_goal.goal.target_pose.pose.orientation.w = w
 
 
         rate = rospy.Rate(50)
@@ -45,27 +59,28 @@ if __name__ == '__main__':
         while not rospy.is_shutdown():
             
             # should be within try and execpt 
-            if goal_index > len(waypoints):
-                rospy.loginfo(f"End of waypoints")
-                exit()
 
-            dx = waypoints[goal_index][0] - current_robot_pose.position.x
-            dy = waypoints[goal_index][1] - current_robot_pose.position.y
+
+            dx = waypoints[goal_index][x_index] - current_robot_pose.position.x
+            dy = waypoints[goal_index][y_index] - current_robot_pose.position.y
             linear_error = math.sqrt(dx**2 + dy**2)
 
-            dz = waypoints[goal_index][2] - current_robot_pose.orientation.z
-            dw = waypoints[goal_index][3] - current_robot_pose.orientation.w
-            angular_error = math.sqrt(dz**2 + dw**2)
+            angular_error = waypoints[goal_index][yaw_index] - robot_yaw
 
-            # print(f"{linear_error:.2f}, {angular_error:.2f}")
-            # print(f"{dy:.2f}, {dz:.2f}, { current_robot_pose.orientation.z:.2f}, { current_robot_pose.orientation.w:.2f}")
+            print(f"Linear Error: {linear_error:.2f}, Angular Error: {angular_error:.2f}")
 
             if linear_error < distance_threshold and angular_error < angular_threshold:
                 goal_index += 1
-                next_goal.goal.target_pose.pose.position.x = waypoints[goal_index][0]
-                next_goal.goal.target_pose.pose.position.y = waypoints[goal_index][1]
-                next_goal.goal.target_pose.pose.orientation.z = waypoints[goal_index][2]
-                next_goal.goal.target_pose.pose.orientation.w = waypoints[goal_index][3]
+                if goal_index > len(waypoints)-1:
+                    rospy.loginfo(f"End of waypoints")
+                    exit()
+                next_goal.goal.target_pose.pose.position.x = waypoints[goal_index][x_index]
+                next_goal.goal.target_pose.pose.position.y = waypoints[goal_index][y_index]
+
+                x, y, z, w = transformations.quaternion_from_euler(0,0,waypoints[goal_index][yaw_index])
+
+                next_goal.goal.target_pose.pose.orientation.z = z
+                next_goal.goal.target_pose.pose.orientation.w = w
                 rospy.loginfo(f"Robot reached goal position, updating with next coordinates")
 
             rospy.sleep(1)
