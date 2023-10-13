@@ -27,17 +27,17 @@ Apart from gmapping, slam toolbox and cartographer package were also taken into 
 With Aruco markers detected and the pose of the robot stored in the form of waypoints the robot is now capable of autonomously capable of navigating in the environment.
 
 <p align="center">
-	<img src="robonautica_slam/media/costmap.png" width="795" height="823"/>
+	<img src="robonautica_slam/media/globalplanner.png" width="972" height="554"/>
 </p>
 <p align="center">
-	<b>CostMap of global planner</b>
+	<b>Global Planner</b>
 </p>
 
 <p align="center">
-	<img src="robonautica_slam/media/plan.png" width="795" height="823"/>
+	<img src="robonautica_slam/media/localplanner.png" width="795" height="823"/>
 </p>
 <p align="center">
-	<b>Global planner</b>
+	<b>Local planner</b>
 </p>
 
 > Still there are two human intervention points, i) Generation of waypoints and providing it to the Robot and ii) Generation of map, the current navigation stack uses preloaded map to traverse the env.
