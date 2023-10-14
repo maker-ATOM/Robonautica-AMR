@@ -17,14 +17,14 @@ class ImageConverterPub:
         self.id_pub = rospy.Publisher("/aruco_ID", String, queue_size=1)
         # print("publishing")
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/camera/color/image_raw", Image, self.callback)
+        self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.callback)
         # print( "sub init")
         self.odom_sub = rospy.Subscriber("/odom", Odometry, self.odom_callback)
 
         self.waypoints = {}  # Use a dictionary to store waypoints
         self.processed_ids = set()  # Keep track of processed IDs
         self.Parameters = aruco.DetectorParameters_create()
-        self.Parameters.adaptiveThreshWinSizeMin = 10
+        self.Parameters.adaptiveThreshWinSizeMin = 19
         # print( "init end")
         
 
@@ -70,10 +70,9 @@ class ImageConverterPub:
                 print(marker_distance)
                 aruco_id = int(ids_list[i][0])
 
-                if aruco_id not in self.processed_ids and marker_distance < 380 and marker_distance > 330:  # Set your desired threshold
+                if aruco_id not in self.processed_ids and marker_distance < 360 and marker_distance > 350:  # Set your desired threshold
                     print("Waypoint added for ArUco ID:", aruco_id)
                     self.waypoints[aruco_id] = {
-                        'aruco_id': aruco_id,
                         'position': {
                             'x': float(x),
                             'y': float(y),
