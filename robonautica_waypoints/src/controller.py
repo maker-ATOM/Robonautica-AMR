@@ -21,15 +21,18 @@ def odom_callback(odom_data):
 
 if __name__ == '__main__':
 
-    # x, y, yaw
-    waypoints = [(0,0,0),(0.5,0,0),(1.0,0,0)]
+    # id, x, y, yaw
+    waypoints = [(1, 0.5, 0.1, 0.1),
+                 (2, 1.0, 0.2, 0.2),
+                 (3, 1.5, 0.3, 0.3)]
     distance_threshold = 0.12
     angular_threshold = 0.2
     goal_index = 0
 
-    x_index = 0
-    y_index = 1
-    yaw_index = 2
+    id_index = 0
+    x_index = 1
+    y_index = 2
+    yaw_index = 3
 
 
 
@@ -70,9 +73,16 @@ if __name__ == '__main__':
             print(f"Linear Error: {linear_error:.2f}, Angular Error: {angular_error:.2f}")
 
             if linear_error < distance_threshold and angular_error < angular_threshold:
+                rospy.loginfo(f"“The UGV is at ({waypoints[goal_index][x_index]}, {waypoints[goal_index][y_index]}, {waypoints[goal_index][yaw_index]}) and has waypoint {waypoints[goal_index][id_index]}.")
+                
+                # wait for 15 seconds
+
                 goal_index += 1
                 if goal_index > len(waypoints)-1:
                     rospy.loginfo(f"End of waypoints")
+
+                    # print finish time
+
                     exit()
                 next_goal.goal.target_pose.pose.position.x = waypoints[goal_index][x_index]
                 next_goal.goal.target_pose.pose.position.y = waypoints[goal_index][y_index]

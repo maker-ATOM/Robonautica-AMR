@@ -60,7 +60,8 @@ with respect to the marker when scanning the ArUco marker.
 	- [x] Convert quats to yaw 
 	- [x] Increase bot speed
 	- [ ] Change controller architecture from PubSub to actionlib
-	- [ ] Try execept block for end of list
+	- [ ] Log statements
+	- [ ] Wait for 15 seconds
 
 
 ## What next?
@@ -163,6 +164,10 @@ roslaunch tortoisebotpromax_description display.launch
 <br>
 > Execute Aruco marker detection and waypoint storage script in this gmapping launch file.
 
+```
+pip3 install opencv-contrib-python==4.4.0.46
+```
+
 Launch gmapping to generate the map of the environment,
 
 ```python
@@ -234,7 +239,7 @@ roslaunch robonautica_slam navigation.launch
 ```
 
 ```python
-rosrun robonautica_wapoints controller.py
+rosrun robonautica_waypoints controller.py
 ```
 
 
