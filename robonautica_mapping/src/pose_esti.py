@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import numpy as np
 import rospy
 import cv2
 import json
@@ -22,6 +22,9 @@ class ImageConverterPub:
         self.odom_sub = rospy.Subscriber("/odom", Odometry, self.odom_callback)
         self.waypoints = []
         self.processed_ids = set()
+        self.marker_x_buffer = []
+        self.marker_y_buffer = []
+        self.marker_distance_buffer = []
 
     def odom_callback(self, data):
         self.odom_data = data
@@ -59,23 +62,45 @@ class ImageConverterPub:
             for i, corner_set in enumerate(corners):
                 marker_x = (corner_set[0][0] + corner_set[0][2]) / 2
                 marker_y = (corner_set[0][1] + corner_set[0][3]) / 2
-                marker_distance = math.sqrt((marker_x[0] - x) ** 2 + (marker_y[0] - y) ** 2 + z ** 2)
-                aruco_id = int(ids_list[i][0])
-                # print(marker_distance)
-                # print(os.getcwd())
 
-                if aruco_id not in self.processed_ids and marker_distance < 390 and marker_distance > 350:  # Set your desired threshold
-                    print("Waypoint added for ArUco ID:", aruco_id)
-                    self.waypoints.append({
-                    'aruco_id': aruco_id,  # Add the ArUco ID to the waypoint entry
-                    'position': {
-                        'x': float(x),
-                        'y': float(y),
-                        'z': float(z)
-                        }
-                    })
-                    self.processed_ids.add(aruco_id)
-                    self.save_waypoints_to_json()
+                marker_x[0], marker_y[0] = round(marker_x[0], 3), round(marker_y[0], 3)
+
+                self.marker_x_buffer.append(marker_x[0])
+                self.marker_y_buffer.append(marker_y[0])
+
+                if len(self.marker_x_buffer) >= 10 and len(self.marker_y_buffer) >= 10:
+                    # Calculate the average of the last 10 values of marker_x and marker_y
+                    avg_marker_x = np.mean(self.marker_x_buffer[-10:])
+                    avg_marker_y = np.mean(self.marker_y_buffer[-10:])
+                    # Calculate marker_distance
+                    marker_distance = math.sqrt((avg_marker_x - x) ** 2 + (avg_marker_y - y) ** 2 + z ** 2)
+                    print(marker_distance)
+                    aruco_id = int(ids_list[i][0])
+                    
+                    self.marker_distance_buffer.append(marker_distance)
+
+                    if len(self.marker_distance_buffer) >= 5:
+                        # Calculate the average of the last 5 marker distances
+                        avg_marker_distance = np.mean(self.marker_distance_buffer[-5:])
+                        print("Average Marker Distance (Last 5):", avg_marker_distance)
+
+                    if aruco_id not in self.processed_ids and 1350 < avg_marker_distance < 1390:  # Set your desired threshold
+                        print("Waypoint added for ArUco ID:", aruco_id)
+                        self.waypoints.append({
+                            'aruco_id': aruco_id,  # Add the ArUco ID to the waypoint entry
+                            'position': {
+                                'x': float(x),
+                                'y': float(y),
+                                'z': float(z)
+                            }
+                        })
+                        self.processed_ids.add(aruco_id)
+                        self.save_waypoints_to_json()
+                        self.marker_x_buffer = []  # Clear the buffer after adding a waypoint
+                        self.marker_y_buffer = []
+                        self.marker_distance_buffer=[]
+
+                    
 
 
                     
