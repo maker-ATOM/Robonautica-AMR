@@ -26,7 +26,7 @@ if __name__ == '__main__':
                  (2, 1.0, 0.2, 0.2),
                  (3, 1.5, 0.3, 0.3)]
     distance_threshold = 0.12
-    angular_threshold = 0.2
+    angular_threshold = 0.3
     goal_index = 0
 
     id_index = 0

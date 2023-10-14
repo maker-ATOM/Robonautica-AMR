@@ -3,7 +3,7 @@
   <include file="$(find robonautica_slam)/launch/amcl.launch"/>
 
   <!-- move_base -->
-  <include file="$(find robonautica_slam)/launch/move_base.launch"/>
+  <include file="$(find robonautica_slam)/launch/move_base_pico.launch"/>
   
 
 </launch>
