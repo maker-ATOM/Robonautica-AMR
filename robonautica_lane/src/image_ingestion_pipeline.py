@@ -7,7 +7,7 @@ from moviepy.editor import *
 
 class laneDetection:
     def detectlanes(self, image):
-        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
+        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
         
          #Yellow color mask
         lower_threshold = np.uint8([10, 0, 100])
@@ -29,11 +29,14 @@ class laneDetection:
         maxLineGap = 300     #Maximum allowed gap between points on the same line to link them
         hough_lines = cv2.HoughLinesP(edge_detected, rho = rho, theta = theta, threshold = threshold,
                            minLineLength = minLineLength, maxLineGap = maxLineGap)
-        res = self.draw_lines(image, hough_lines)
+        #res = self.draw_lines(image, hough_lines)
+        filteredlines = [hough_lines[0],hough_lines[1]]
+        #lanelines = self.lane_lines(image, hough_lines)
         
-        lanelines = self.lane_lines(image, hough_lines)
-        return lanelines
-        #print(lanelines)
+        #filteredlines = []
+        #filteredlines.append([(lanelines[0][0][0], lanelines[0][0][1], lanelines[0][1][0], lanelines[0][1][1]), (lanelines[1][0][0], lanelines[1][0][1], lanelines[1][1][0], lanelines[1][1][1])])
+        # print(filteredlines)
+        return filteredlines
         #viz = self.draw_lane_lines(image, lanelines)
         #self.showimgs(viz)
 

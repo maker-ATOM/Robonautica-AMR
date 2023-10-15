@@ -15,7 +15,7 @@ class LaneFollower:
         print("node started")
         self.kp=0.1
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.image_callback)
+        self.image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.image_callback)
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self.obstacle_sub= rospy.Subscriber('/obstacle_state',Bool,self.obs_callback)
         self.twist = Twist()
@@ -23,25 +23,26 @@ class LaneFollower:
     def obs_callback(self,val):
         try:
             # print(val)
-            self.value=val
+            self.value=False
         except:
             print(" no data")    
 
     def image_callback(self, msg):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+            
         except CvBridgeError as e:
             rospy.logerr(e)
             return
 
         # Apply image processing to detect lanes
-        processed_error = self.process_image(cv_image)
+        processed_lane = self.process_image(cv_image)
         cv2.imshow("output lane",cv_image)
         cv2.waitKey(3)
 
 
         # Calculate control commands based on lane detection
-        cmd_vel = self.calculate_cmd_vel(processed_error)
+        cmd_vel = self.calculate_cmd_vel(processed_lane)
 
         # Publish the control commands
         self.cmd_vel_pub.publish(cmd_vel)
@@ -59,18 +60,21 @@ class LaneFollower:
         # print("before processing")
         imgProc = laneDetection()
         lanes = imgProc.detectlanes(image)
-        error=slope_diff(lanes)
-        print(error)
+        if(lanes is not None):
+            lanes_prev= lanes
+        # error=slope_diff(lanes)
+        # print(error)
         # cv2.imshow("lane Image",lanes[0])
         # cv2.waitKey(3)
         # print("after Processing")
-        return (error)
+        return (lanes)
 
-    def calculate_cmd_vel(self, error):
+    def calculate_cmd_vel(self, lanes):
         # print("a")
-        linear_x=1.5
-        angular_z= self.kp*error
-        if self.value==False:
+        linear_x=1.0
+        
+        angular_z= self.kp*
+        if self.value==False and 3>abs(angular_z)>1:
             self.twist.linear.x= linear_x
             self.twist.angular.z=angular_z
         else:

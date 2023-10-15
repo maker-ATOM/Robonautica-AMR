@@ -13,7 +13,7 @@ import math
 def slope_diff(lanes):
     slope_diff_sum = 0
     try:
-        for lane in lanes:
+        for lane in lanes[0]:
     
             x1, y1, x2, y2 = lane
             slope = math.atan2(y2 - y1, x2 - x1)
