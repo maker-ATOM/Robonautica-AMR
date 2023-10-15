@@ -242,5 +242,19 @@ roslaunch robonautica_slam navigation.launch
 rosrun robonautica_waypoints controller.py
 ```
 
+## Step 4 : Lane and Obstacle
+
+Gazebo
+
+```python
+roslaunch tortoisebotpromax_gazebo tortoisebotpromax_traffic_iisc.launch
+```
+
+Rviz
+
+```python
+rviz -d ~/catkin_ws/src/Robonautica-AMR/robonautica_lane/rviz/lane.rviz 
+```
+
 
 **Note:** All the above ros command should be executed in different terminal.
