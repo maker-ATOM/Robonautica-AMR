@@ -1,0 +1,8 @@
+<launch>
+    <!-- Launch the first node -->
+    <node name="controller_node" pkg="robonautica_lane" type="obstacle.py" output="screen" />
+
+    <!-- Launch the second node -->
+    <node name="lane_follower_node" pkg="robonautica_lane" type="lane_test.py" output="screen" />
+
+</launch>

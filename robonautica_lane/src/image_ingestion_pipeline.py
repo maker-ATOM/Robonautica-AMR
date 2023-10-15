@@ -32,6 +32,7 @@ class laneDetection:
         res = self.draw_lines(image, hough_lines)
         
         lanelines = self.lane_lines(image, hough_lines)
+        return lanelines
         #print(lanelines)
         #viz = self.draw_lane_lines(image, lanelines)
         #self.showimgs(viz)

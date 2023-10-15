@@ -23,7 +23,7 @@ if __name__ == '__main__':
         pub = rospy.Publisher("/obstacle_state", Bool, queue_size = 10)
         rospy.Subscriber("/scan", LaserScan, lidar_callback)
    
-        angle = math.radians(40)
+        angle = math.radians(20)
 
         obstacle_state = Bool()
         obstacle_state.data = False
@@ -37,16 +37,21 @@ if __name__ == '__main__':
         while not rospy.is_shutdown():
             
             try:
+
+                # print(len(lidar_data.ranges))
+                # print(lidar_data.angle_increment)
+
+                l1 = lidar_data.ranges[120:140]
                 
-                l1 = lidar_data.ranges[:int((angle / 2)/lidar_data.angle_increment)]
+                # l1 = lidar_data.ranges[:int((angle / 2)/lidar_data.angle_increment)]
                 l2 = lidar_data.ranges[-int((angle / 2)/lidar_data.angle_increment):-1]
-                avg = sum(l1 + l2) / len(l1 + l2)
+                avg = sum(l1) / len(l1)
+                # print(avg)
                 if avg > distance_threshold:
                     obstacle_state.data = False
                 else:
                     obstacle_state.data = True
 
-                print(obstacle_state.data)
             except:
                 print("yet")
             pub.publish(obstacle_state)

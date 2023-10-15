@@ -3,10 +3,11 @@ from controller import slope_diff
 import rospy
 import cv2
 import numpy as np
+from std_msgs.msg import Bool
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from geometry_msgs.msg import Twist
-from image_ingestion_pipeline import ImageIngester
+from image_ingestion_pipeline import laneDetection
 
 class LaneFollower:
     def __init__(self):
@@ -15,8 +16,16 @@ class LaneFollower:
         self.kp=0.1
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.image_callback)
-        # self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+        self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+        self.obstacle_sub= rospy.Subscriber('/obstacle_state',Bool,self.obs_callback)
         self.twist = Twist()
+
+    def obs_callback(self,val):
+        try:
+            # print(val)
+            self.value=val
+        except:
+            print(" no data")    
 
     def image_callback(self, msg):
         try:
@@ -47,22 +56,26 @@ class LaneFollower:
             Parameters:
                 image: list of image/s
         '''
-        print("before processing")
-        imgProc = ImageIngester()
+        # print("before processing")
+        imgProc = laneDetection()
         lanes = imgProc.detectlanes(image)
         error=slope_diff(lanes)
-
+        print(error)
         # cv2.imshow("lane Image",lanes[0])
         # cv2.waitKey(3)
-        print("after Processing")
+        # print("after Processing")
         return (error)
 
     def calculate_cmd_vel(self, error):
-        print("a")
+        # print("a")
         linear_x=1.5
         angular_z= self.kp*error
-        self.twist.linear.x= linear_x
-        self.twist.angular.z=angular_z
+        if self.value==False:
+            self.twist.linear.x= linear_x
+            self.twist.angular.z=angular_z
+        else:
+            self.twist.linear.x= 0
+            self.twist.angular.z=0
 
         return self.twist
 
