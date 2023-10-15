@@ -15,7 +15,7 @@ class LaneFollower:
         print("node started")
         self.kp=0.1
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.image_callback)
+        self.image_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.image_callback)
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self.obstacle_sub= rospy.Subscriber('/obstacle_state',Bool,self.obs_callback)
         self.twist = Twist()
@@ -23,7 +23,7 @@ class LaneFollower:
     def obs_callback(self,val):
         try:
             # print(val)
-            self.value=False
+            self.value=val
         except:
             print(" no data")    
 
@@ -40,7 +40,7 @@ class LaneFollower:
         cv2.imshow("output lane",cv_image)
         cv2.waitKey(3)
 
-
+        # count= 
         # Calculate control commands based on lane detection
         cmd_vel = self.calculate_cmd_vel(processed_lane)
 
@@ -60,8 +60,11 @@ class LaneFollower:
         # print("before processing")
         imgProc = laneDetection()
         lanes = imgProc.detectlanes(image)
+        print(lanes)
         if(lanes is not None):
             lanes_prev= lanes
+        else:
+            return (lanes_prev)    
         # error=slope_diff(lanes)
         # print(error)
         # cv2.imshow("lane Image",lanes[0])
@@ -71,15 +74,58 @@ class LaneFollower:
 
     def calculate_cmd_vel(self, lanes):
         # print("a")
-        linear_x=1.0
-        
-        angular_z= self.kp*
-        if self.value==False and 3>abs(angular_z)>1:
+        staright=3
+        turn =2.5
+        threshold=-1.2
+        linear_x=0.5
+        error= threshold-lanes
+        angular_z= self.kp*error
+        print(self.value.data)
+        if self.value.data== False:
+            # print(linear_x)
             self.twist.linear.x= linear_x
             self.twist.angular.z=angular_z
-        else:
+        elif self.value.data==True:
+            # print()
             self.twist.linear.x= 0
+            self.twist.angular.z=-0.5
+            self.cmd_vel_pub.publish(self.twist)
+            rospy.sleep(turn)
+            self.twist.linear.x= 1
             self.twist.angular.z=0
+            self.cmd_vel_pub.publish(self.twist)
+            rospy.sleep(staright)
+            self.twist.linear.x= 0
+            self.twist.angular.z=0.5
+            self.cmd_vel_pub.publish(self.twist)
+            rospy.sleep(turn)
+            self.twist.linear.x= 1
+            self.twist.angular.z=0
+            self.cmd_vel_pub.publish(self.twist)
+            rospy.sleep(staright)
+            self.twist.linear.x= 0
+            self.twist.angular.z=0.5
+            self.cmd_vel_pub.publish(self.twist)
+            rospy.sleep(turn)
+            self.twist.linear.x= 1
+            self.twist.angular.z=0
+            self.cmd_vel_pub.publish(self.twist)
+            rospy.sleep(staright)
+            self.twist.linear.x= 0
+            self.twist.angular.z=-0.5
+            self.cmd_vel_pub.publish(self.twist)
+            rospy.sleep(turn)
+
+
+        # elif count==1 and:
+        #     self.twist.linear.x= 0
+        #     self.twist.angular.z=0.5
+        # elif count==2:
+        #     self.twist.linear.x= 0.5
+        #     self.twist.angular.z= 0   
+        # elif count==3:
+        #     self.twist.linear.x= 0
+        #     self.twist.angular.z= -0.5      
 
         return self.twist
 

@@ -7,20 +7,24 @@ from moviepy.editor import *
 
 class laneDetection:
     def detectlanes(self, image):
-        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+        image = self.clipimage(image)
+        
+        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
         
          #Yellow color mask
+
         lower_threshold = np.uint8([10, 0, 100])
         upper_threshold = np.uint8([40, 255, 255])
         yellow_mask = cv2.inRange(hsv, lower_threshold, upper_threshold)
         masked_image = cv2.bitwise_and(image, image, mask = yellow_mask)
-
+        self.showimgs(masked_image)
         gray_image = cv2.cvtColor(masked_image, cv2.COLOR_RGB2GRAY)
         kernel_size = 13
         blur_image = cv2.GaussianBlur(gray_image, (kernel_size, kernel_size), 0)
         low_threshold = 50 
         high_threshold = 150
         edge_detected = cv2.Canny(blur_image, low_threshold, high_threshold)
+        
 
         rho = 1              #Distance resolution of the accumulator in pixels.
         theta = np.pi/180    #Angle resolution of the accumulator in radians.
@@ -29,16 +33,34 @@ class laneDetection:
         maxLineGap = 300     #Maximum allowed gap between points on the same line to link them
         hough_lines = cv2.HoughLinesP(edge_detected, rho = rho, theta = theta, threshold = threshold,
                            minLineLength = minLineLength, maxLineGap = maxLineGap)
-        #res = self.draw_lines(image, hough_lines)
-        filteredlines = [hough_lines[0],hough_lines[1]]
-        #lanelines = self.lane_lines(image, hough_lines)
+        res = self.draw_lines(image, hough_lines)
         
-        #filteredlines = []
-        #filteredlines.append([(lanelines[0][0][0], lanelines[0][0][1], lanelines[0][1][0], lanelines[0][1][1]), (lanelines[1][0][0], lanelines[1][0][1], lanelines[1][1][0], lanelines[1][1][1])])
-        # print(filteredlines)
-        return filteredlines
+        
+        lanelines = self.lane_lines(image, hough_lines)
+        filteredlines = []
+        if lanelines is not None:
+            filteredlines.append([(lanelines[0][0][0], lanelines[0][0][1], lanelines[0][1][0], lanelines[0][1][1]), (lanelines[1][0][0], lanelines[1][0][1], lanelines[1][1][0], lanelines[1][1][1])])
+            # print(filteredlines)
+            self.showimgs(self.draw_lines(image, filteredlines))
+            x1,y1,x2,y2 = filteredlines[0][0]
+            # print((y2-y1)/(x2-x1))
+            return (y2-y1)/(x2-x1)
+        else:
+            return None
+        # return lanelines
+        #print(lanelines)
         #viz = self.draw_lane_lines(image, lanelines)
         #self.showimgs(viz)
+        
+
+    def clipimage(self, image):
+        x, y, z = image.shape
+        x1, y1 = int(0.3*x), 0  # Top-left corner
+        x2, y2 = int(x), y  # Bottom-right corner
+
+        # Crop the ROI from the image
+        return image[y1:y2, x1:x2, :]
+
 
     def draw_lines(self, image, lines, color = [255, 0, 0], thickness = 2):
         """
@@ -57,7 +79,7 @@ class laneDetection:
     
     def showimgs(self, image):
         cv2.imshow('',image)
-        cv2.waitKey(0)
+        # cv2.waitKey(0)
 
     def average_slope_intercept(self, lines):
         """
@@ -135,5 +157,5 @@ class laneDetection:
 
 if __name__ == "__main__":
     test = laneDetection()
-    image = plt.imread('test_images\\robonauticasnap2.jpg')
+    image = plt.imread('test_images\\robonauticasnap6.jpg')
     test.detectlanes(image)

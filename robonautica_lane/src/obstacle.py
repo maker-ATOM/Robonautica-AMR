@@ -28,7 +28,7 @@ if __name__ == '__main__':
         obstacle_state = Bool()
         obstacle_state.data = False
 
-        distance_threshold = 0.8
+        distance_threshold = 0.6
 
         rate = rospy.Rate(50)
 
@@ -42,6 +42,7 @@ if __name__ == '__main__':
                 # print(lidar_data.angle_increment)
 
                 l1 = lidar_data.ranges[120:140]
+                
                 
                 # l1 = lidar_data.ranges[:int((angle / 2)/lidar_data.angle_increment)]
                 l2 = lidar_data.ranges[-int((angle / 2)/lidar_data.angle_increment):-1]
