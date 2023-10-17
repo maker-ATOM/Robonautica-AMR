@@ -63,14 +63,7 @@ class laneDetection:
 
 
     def draw_lines(self, image, lines, color = [255, 0, 0], thickness = 2):
-        """
-        Draw lines onto the input image.
-            Parameters:
-                image: An np.array compatible with plt.imshow.
-                lines: The lines we want to draw.
-                color (Default = red): Line color.
-                thickness (Default = 2): Line thickness.
-        """
+        
         image = np.copy(image)
         for line in lines:
             for x1,y1,x2,y2 in line:
@@ -82,11 +75,7 @@ class laneDetection:
         # cv2.waitKey(0)
 
     def average_slope_intercept(self, lines):
-        """
-        Find the slope and intercept of the left and right lanes of each image.
-            Parameters:
-                lines: The output lines from Hough Transform.
-        """
+        
         left_lines    = [] #(slope, intercept)
         left_weights  = [] #(length,)
         right_lines   = [] #(slope, intercept)
@@ -110,13 +99,7 @@ class laneDetection:
         return left_lane, right_lane
     
     def pixel_points(self, y1, y2, line):
-        """
-        Converts the slope and intercept of each line into pixel points.
-            Parameters:
-                y1: y-value of the line's starting point.
-                y2: y-value of the line's end point.
-                line: The slope and intercept of the line.
-        """
+        
         if line is None:
             return None
         slope, intercept = line
@@ -127,12 +110,7 @@ class laneDetection:
         return ((x1, y1), (x2, y2))
     
     def lane_lines(self, image, lines):
-        """
-        Create full lenght lines from pixel points.
-            Parameters:
-                image: The input test image.
-                lines: The output lines from Hough Transform.
-        """
+        
         left_lane, right_lane = self.average_slope_intercept(lines)
         y1 = image.shape[0]
         y2 = y1 * 0.6
@@ -141,14 +119,7 @@ class laneDetection:
         return left_line, right_line
     
     def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=12):
-        """
-        Draw lines onto the input image.
-            Parameters:
-                image: The input test image.
-                lines: The output lines from Hough Transform.
-                color (Default = red): Line color.
-                thickness (Default = 12): Line thickness. 
-        """
+        
         line_image = np.zeros_like(image)
         for line in lines:
             if line is not None:
