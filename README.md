@@ -53,15 +53,14 @@ For controller `next_goal_pose` is published on topic `move_base_simple/goal` an
 - [x] localization for SLAM.
 - [x] Statc Path plan using move_base 
 - [x] Collision avoidance and control of the robot using move_base from Navigation stack.
-- [ ] Scan the ArUco markers and store the robot’s closest possible pose
+- [X] Scan the ArUco markers and store the robot’s closest possible pose
 with respect to the marker when scanning the ArUco marker.
-- [ ] Autonomously navigate to each ArUco marker
+- [X] Autonomously navigate to each ArUco marker
 - [x] Controller node so robot reaches all the generated waypoints
 	- [x] Convert quats to yaw 
 	- [x] Increase bot speed
-	- [ ] Change controller architecture from PubSub to actionlib
-	- [ ] Log statements
-	- [ ] Wait for 15 seconds
+	- [X] Change controller architecture from PubSub to actionlib
+
 
 
 ## What next?
@@ -243,12 +242,21 @@ rosrun robonautica_waypoints controller.py
 ```
 
 ## Step 4 : Lane and Obstacle
+Yellow Lane detection and Obstacle avoidance python programs
 
 Gazebo
 
 ```python
 roslaunch tortoisebotpromax_gazebo tortoisebotpromax_traffic_iisc.launch
 ```
+This file launches the simluation environment for this task
+
+Launch
+```python
+roslaunch robonautica_lane controller.py
+```
+
+This launch file launches two nodes, one launches main algorithm for lane detection and obstacle avoidance and another which publishes data on obstacle be taking into consideration of lidar data from /scan topic.
 
 Rviz
 
@@ -258,3 +266,5 @@ rviz -d ~/catkin_ws/src/Robonautica-AMR/robonautica_lane/rviz/lane.rviz
 
 
 **Note:** All the above ros command should be executed in different terminal.
+
+Lane detection primarily ensured bot tracking by analyzing a single lane's slope, simplifying the process. The camera image was cropped to the lower left side, converted to HSL color space for better color representation, and then transformed into grayscale to emphasize the lane. To mitigate image noise, we applied Gaussian blur and subsequently utilized Canny edge detection. The Hough transform isolated lane features, providing x and y coordinates for the left lane edges. To represent the left lane as a single line, we averaged the lines and extrapolated the lane trajectory, using the lane slope as a marker to keep the bot on course  
