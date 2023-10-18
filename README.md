@@ -268,3 +268,7 @@ rviz -d ~/catkin_ws/src/Robonautica-AMR/robonautica_lane/rviz/lane.rviz
 **Note:** All the above ros command should be executed in different terminal.
 
 Lane detection primarily ensured bot tracking by analyzing a single lane's slope, simplifying the process. The camera image was cropped to the lower left side, converted to HSL color space for better color representation, and then transformed into grayscale to emphasize the lane. To mitigate image noise, we applied Gaussian blur and subsequently utilized Canny edge detection. The Hough transform isolated lane features, providing x and y coordinates for the left lane edges. To represent the left lane as a single line, we averaged the lines and extrapolated the lane trajectory, using the lane slope as a marker to keep the bot on course  
+
+<p align="center">
+	<img src="robonautica_lane/Media/output.png" width="872" height="370"/>
+</p>
