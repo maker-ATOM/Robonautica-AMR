@@ -20,7 +20,7 @@ Apart from gmapping, slam toolbox and cartographer package were also taken into 
 	<b>Generated map by gmapping package</b>
 </p>
 
-[Video Reference](https://github.com/maker-ATOM/robonautica_mapping/tree/master/media)
+[Video Reference](https://github.com/maker-ATOM/Robonautica-AMR/tree/master/robonautica_mapping/media)
 
 > Document of detection of aruco markers
 
@@ -241,7 +241,7 @@ roslaunch robonautica_slam navigation.launch
 rosrun robonautica_waypoints controller.py
 ```
 
-## Step 4 : Lane and Obstacle
+### Step 4 : Lane and Obstacle
 Yellow Lane detection and Obstacle avoidance python programs
 
 Gazebo
@@ -272,3 +272,6 @@ Lane detection primarily ensured bot tracking by analyzing a single lane's slope
 <p align="center">
 	<img src="robonautica_lane/Media/output.png" width="872" height="370"/>
 </p>
+
+The contour mapping  for wall following was implemented in this task when an obstacle was observed .We took the `/scan` topic from lidar and segmented the lidar scan data into front, left and right by slicing the range list.
+Once the obstacle node notifies us about the presence of an obstacle in front of it we perform contour mapping which actually follows the surface of the wall until it finds the newest left lane. Inspired by bug 1 algorithm.
