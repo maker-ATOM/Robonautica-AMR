@@ -1,3 +1,4 @@
+Check [description.md](https://github.com/maker-ATOM/Robonautica-AMR/blob/master/DESCRIPTION.md) as well.
 ## Ideology
 
 Spawning of the robot happens as simply as launching the two launch files provided. `spawn_model` within `gazebo_ros` pacakge, the node responsible to launch the robot has been included within the `tortoisebotpromax_playground` itself. With the robot spawned the lidar data published on the topic `scan` by gazebo can be visualized using rviz.
